@@ -1,4 +1,4 @@
-# FingerFlick
+# Flick Blast
 
 A browser game where you **flick your fingers at the camera** to launch projectiles and smash targets. Hand tracking is powered by [MediaPipe Hands](https://developers.google.com/mediapipe) running entirely in your browser — no data leaves your machine.
 
