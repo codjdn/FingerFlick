@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Flick Blast</title>
+<title>Finger Flick</title>
 <style>
   :root {
     --bg: #0b1020;
@@ -202,7 +202,7 @@
 <!-- ---------- Start screen ---------- -->
 <div class="overlay" id="ovStart">
   <div class="card">
-    <h1 class="logo">FLICK BLAST</h1>
+    <h1 class="logo">FINGER FLICK</h1>
     <div class="tagline">Flick your fingers. Smash the targets. No mouse required.</div>
     <ul class="howto">
       <li><span class="n">1</span><span><b>Allow camera access</b> and hold your hand up, palm facing the camera. The view is mirrored, like a selfie.</span></li>
@@ -289,38 +289,13 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js"></script>
 <script>
 'use strict';
 /* =====================================================================
- *  FLICK BLAST — a MediaPipe hand-tracking flick-shooter.
+ *  FINGER FLICK — a MediaPipe hand-tracking flick-shooter.
  *  Single file, no build step. Only external dependency: MediaPipe CDN.
  * ===================================================================== */
-
-const MEDIAPIPE_HANDS_SRC = 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js';
-const MEDIAPIPE_LOAD_TIMEOUT_MS = 12000;
-
-// Loaded lazily (on first "Play" click) instead of via a blocking <script>
-// tag, so a slow/unreachable CDN shows a retryable error instead of leaving
-// the page looking permanently stuck on the start screen.
-let handsScriptPromise = null;
-function loadHandsScript() {
-  if (window.Hands) return Promise.resolve();
-  if (handsScriptPromise) return handsScriptPromise;
-  handsScriptPromise = new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error('Timed out loading the hand-tracking library. Check your connection and try again.'));
-    }, MEDIAPIPE_LOAD_TIMEOUT_MS);
-    const script = document.createElement('script');
-    script.src = MEDIAPIPE_HANDS_SRC;
-    script.onload = () => { clearTimeout(timer); resolve(); };
-    script.onerror = () => {
-      clearTimeout(timer);
-      reject(new Error('Could not load the hand-tracking library from the CDN.'));
-    };
-    document.head.appendChild(script);
-  }).catch(e => { handsScriptPromise = null; throw e; });
-  return handsScriptPromise;
-}
 
 // ---------------------------------------------------------------- utils
 const $ = id => document.getElementById(id);
@@ -559,7 +534,6 @@ async function initTracking(statusEl) {
   try {
     if (!hands) {
       say('Loading hand tracker…');
-      await loadHandsScript();
       makeHands();
       trackingOn = true;
       trackLoop();
@@ -567,7 +541,7 @@ async function initTracking(statusEl) {
       trackingOn = true;
     }
   } catch (e) {
-    say((e && e.message) || 'Failed to load the hand-tracking library.', true);
+    say('Failed to load MediaPipe: ' + (e && e.message || e), true);
     return false;
   }
   say('');
@@ -1268,7 +1242,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ---------------------------------------------------------------- boot
-loadHandsScript().catch(() => {}); // warm the CDN fetch; real errors are surfaced on Play
 refreshStartCard();
 syncSettingsPanel();
 updateHud();
