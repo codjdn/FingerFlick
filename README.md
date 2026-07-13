@@ -4,6 +4,8 @@ A browser game where you **flick your fingers at the camera** to launch projecti
 
 ## Play
 
+Play it live at **https://codjdn.github.io/FingerFlick/** (deployed automatically from `main` via GitHub Actions).
+
 The whole game is a single file: [`index.html`](index.html). The only external dependency is the MediaPipe CDN.
 
 Camera access requires a **secure context**, so opening the file directly via `file://` won't work in most browsers. Serve it locally instead:
